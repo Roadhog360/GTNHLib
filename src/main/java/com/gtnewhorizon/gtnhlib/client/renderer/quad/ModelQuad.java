@@ -84,6 +84,12 @@ public class ModelQuad implements ModelQuadViewMutable {
     @Override
     public void setCullFace(ForgeDirection f) {}
 
+    /**
+     * Just doing this because the above also has no action.
+     */
+    @Override
+    public void setLightFace(ForgeDirection dir) {}
+
     @Override
     public int getLight(int idx) {
         return this.data[vertexOffset(idx) + LIGHT_INDEX];
@@ -155,7 +161,7 @@ public class ModelQuad implements ModelQuadViewMutable {
     }
 
     @Override
-    public TextureAtlasSprite rubidium$getSprite() {
+    public TextureAtlasSprite getSprite() {
         return this.sprite;
     }
 

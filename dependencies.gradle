@@ -25,4 +25,9 @@ dependencies {
 
     // For CapturingTesselator compat
     compileOnly("com.falsepattern:falsetweaks-mc1.7.10:3.3.2:api")
+
+    // To annotate the JSONModel ISBRHs as thread-safe
+    compileOnly("com.github.GTNewHorizons:Angelica:1.0.0-beta4:api") {
+        transitive = false
+    }
 }

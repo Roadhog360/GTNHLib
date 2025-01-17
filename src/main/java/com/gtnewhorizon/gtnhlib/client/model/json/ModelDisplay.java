@@ -2,6 +2,8 @@ package com.gtnewhorizon.gtnhlib.client.model.json;
 
 import org.joml.Vector3f;
 
+import lombok.Getter;
+
 public class ModelDisplay {
 
     public static final ModelDisplay DEFAULT = new ModelDisplay(
@@ -9,8 +11,11 @@ public class ModelDisplay {
             new Vector3f(0, 0, 0),
             new Vector3f(1, 1, 1));
 
+    @Getter
     private final Vector3f rotation;
+    @Getter
     private final Vector3f translation;
+    @Getter
     private final Vector3f scale;
 
     public ModelDisplay(Vector3f rotation, Vector3f translation, Vector3f scale) {
@@ -32,7 +37,7 @@ public class ModelDisplay {
         FIXED; // item frames
 
         public static Position getByName(String name) {
-            return switch (name) {
+            return switch (name.toLowerCase()) {
                 case "thirdperson_righthand" -> THIRDPERSON_RIGHTHAND;
                 case "thirdperson_lefthand" -> THIRDPERSON_LEFTHAND;
                 case "firstperson_righthand" -> FIRSTPERSON_RIGHTHAND;

@@ -45,13 +45,14 @@ public class Quad implements QuadView {
     private int cachedFlags;
     @Getter
     private ForgeDirection face;
+    private ForgeDirection lightFace;
     private int colorIndex = -1;
     private TextureAtlasSprite sprite = null;
 
     /** Returns the face, forced to take one of 6 directions to mirror the behavior of baked quads in 1.16.5. */
     @Override
     public ForgeDirection getLightFace() {
-        return this.face != ForgeDirection.UNKNOWN ? this.face : ForgeDirection.UP;
+        return lightFace;
     }
 
     @Override
@@ -110,13 +111,22 @@ public class Quad implements QuadView {
     }
 
     @Override
-    public TextureAtlasSprite rubidium$getSprite() {
+    public TextureAtlasSprite getSprite() {
         return this.sprite;
     }
 
     @Override
     public void setCullFace(ForgeDirection face) {
         this.face = face;
+        this.lightFace = face == null || face == ForgeDirection.UNKNOWN ? ForgeDirection.UP : face;
+    }
+
+    @Override
+    public void setLightFace(ForgeDirection face) {
+        if (face == null || face == ForgeDirection.UNKNOWN) {
+            throw new IllegalArgumentException("Light face cannot be unknown or null!");
+        }
+        this.lightFace = face;
     }
 
     @Override
@@ -252,9 +262,10 @@ public class Quad implements QuadView {
         this.deleted = quad.isDeleted();
         this.shade = quad.isShade();
         this.face = quad.getFace();
+        this.lightFace = quad.getLightFace();
         this.colorIndex = quad.getColorIndex();
         this.cachedFlags = quad.getFlags();
-        this.sprite = quad.rubidium$getSprite();
+        this.sprite = quad.getSprite();
 
         return this;
     }

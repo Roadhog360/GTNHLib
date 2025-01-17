@@ -4,9 +4,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 
-import com.gtnewhorizon.gtnhlib.client.renderer.util.DirectionUtil;
+import com.gtnewhorizon.gtnhlib.client.renderer.quad.ModelQuadView;
+import com.gtnewhorizon.gtnhlib.client.renderer.quad.properties.ModelQuadFlags;
 
 public class NormalHelper {
 
@@ -19,12 +19,17 @@ public class NormalHelper {
      * Will work with triangles also. Assumes counter-clockwise winding order, which is the norm. Expects convex quads
      * with all points co-planar.
      */
-    public static void computeFaceNormal(@NotNull Vector3f saveTo, NdQuadBuilder q) {
-        final ForgeDirection nominalFace = q.nominalFace();
-
-        if (nominalFace != ForgeDirection.UNKNOWN && GeometryHelper.isQuadParallelToFace(nominalFace, q)) {
-            Vector3i vec = DirectionUtil.STEP[nominalFace.ordinal()];
-            saveTo.set(vec.x, vec.y, vec.z);
+    public static void computeFaceNormal(@NotNull Vector3f saveTo, ModelQuadView q) {
+        if (q instanceof NdQuadBuilder ndq) {
+            final ForgeDirection nominalFace = ndq.nominalFace();
+            if (nominalFace != ForgeDirection.UNKNOWN && GeometryHelper.isQuadParallelToFace(nominalFace, ndq)) {
+                ForgeDirection dir = q.getCullFace();
+                saveTo.set(dir.offsetX, dir.offsetY, dir.offsetZ);
+                return;
+            }
+        } else if ((q.getFlags() & ModelQuadFlags.IS_ALIGNED) != 0 && q.getCullFace() != ForgeDirection.UNKNOWN) {
+            ForgeDirection dir = q.getCullFace();
+            saveTo.set(dir.offsetX, dir.offsetY, dir.offsetZ);
             return;
         }
 

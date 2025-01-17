@@ -77,7 +77,7 @@ public interface ModelQuadView {
 
     /**
      * Copies this quad's data into the specified buffer starting at the given position.
-     * 
+     *
      * @param buf      The buffer to write this quad's data to
      * @param position The starting byte index to write to
      */
@@ -98,5 +98,5 @@ public interface ModelQuadView {
     /**
      * @return The sprite texture used by this quad, or null if none is attached
      */
-    TextureAtlasSprite rubidium$getSprite();
+    TextureAtlasSprite getSprite();
 }

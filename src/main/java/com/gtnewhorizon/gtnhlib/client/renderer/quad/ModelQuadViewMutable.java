@@ -5,6 +5,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.quad.properties.ModelQuadFlags;
 
+import lombok.NonNull;
+
 /**
  * Provides a mutable view to a model quad.
  */
@@ -89,4 +91,10 @@ public interface ModelQuadViewMutable extends ModelQuadView {
      * {@link #getLightFace()}.
      */
     void setCullFace(ForgeDirection dir);
+
+    /**
+     * The {@link ForgeDirection} in which this quad is most closely aligned with Cannot be
+     * {@link ForgeDirection#UNKNOWN} or null
+     */
+    void setLightFace(@NonNull ForgeDirection dir);
 }

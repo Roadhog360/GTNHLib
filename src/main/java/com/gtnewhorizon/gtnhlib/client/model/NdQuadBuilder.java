@@ -125,6 +125,7 @@ public class NdQuadBuilder extends Quad implements QuadBuilder {
         if ((this.geometryFlags & ModelQuadFlags.IS_ALIGNED) != 0) this.setCullFace(this.lightFace);
         else {
             this.setCullFace(ForgeDirection.UNKNOWN);
+            super.setLightFace(this.lightFace);
             this.nominalFace(this.lightFace);
         }
     }
@@ -302,7 +303,7 @@ public class NdQuadBuilder extends Quad implements QuadBuilder {
     }
 
     @Override
-    public TextureAtlasSprite rubidium$getSprite() {
+    public TextureAtlasSprite getSprite() {
         return null;
     }
 }
