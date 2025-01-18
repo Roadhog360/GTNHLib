@@ -61,15 +61,15 @@ public abstract class RenderJSONBase implements JsonModelISBRH {
 
         int color = model.getColor(world, x, y, z, block, meta, random);
 
+        tesselator.setBrightness(
+                world instanceof World worldIn
+                        ? worldIn.getBlockLightValue_do(x, y, z, block.getUseNeighborBrightness())
+                        : block.getMixedBrightnessForBlock(world, x, y, z));
+
         // ALL_DIRECTIONS comes from NHLib too - caches .values() to avoid allocating a bunch
         for (ForgeDirection dir : DirectionUtil.ALL_DIRECTIONS) {
             // Saves a little performance if you cull faces ASAP, although you'd have to write this yourself
             if (dir != ForgeDirection.UNKNOWN && this.isCulled(world, x, y, z, block, meta, dir)) continue;
-
-            tesselator.setBrightness(
-                    world instanceof World worldIn
-                            ? worldIn.getBlockLightValue_do(x, y, z, block.getUseNeighborBrightness())
-                            : block.getMixedBrightnessForBlock(world, x, y, z));
 
             // iterates over the quads and dumps em into the tesselator, nothing special
             for (final QuadView quad : model.getQuads(world, x, y, z, block, meta, dir, random, color, sq)) {
@@ -268,23 +268,25 @@ public abstract class RenderJSONBase implements JsonModelISBRH {
         return quad.getZ(idx) + z;
     }
 
-    /// TODO: Override icons aren't mapped properly right now; we need to do that.
+    /// Almost works, seems a little inaccurate, but I can't really figure out why?
     protected float getU(QuadView quad, IIcon icon, int idx) {
         if (icon != null) {
-            float relative = quad.getTexU(0) - quad.getTexU(2);
-            // relative *= (icon.getMaxU() - icon.getMinU());
-            return idx == 0 || idx == 1 ? relative + icon.getMinU() : icon.getMaxU() - relative;
+            boolean isLower = quad.getTexU(0) == quad.getTexU(1) ? idx == 0 || idx == 1 : idx == 0 || idx == 3;
+            // I tried 0, 2, 0, 2 here, but it seems 0,1 0,2 works better for some strange reason?
+            float relative = Math.max(quad.getTexU(0), quad.getTexU(1)) - Math.min(quad.getTexU(0), quad.getTexU(2));
+            return isLower ? icon.getMinU() + relative : icon.getMaxU() - relative;
         }
 
         return quad.getTexU(idx);
     }
 
-    /// TODO: Override icons aren't mapped properly right now; we need to do that.
+    /// Almost works, seems a little inaccurate, but I can't really figure out why?
     protected float getV(QuadView quad, IIcon icon, int idx) {
         if (icon != null) {
-            float relative = quad.getTexV(0) - quad.getTexV(2);
-            // relative *= (icon.getMaxV() - icon.getMinV());
-            return idx == 0 || idx == 3 ? relative + icon.getMinV() : icon.getMaxV() - relative;
+            boolean isLower = quad.getTexV(0) == quad.getTexV(1) ? idx == 0 || idx == 1 : idx == 0 || idx == 3;
+            // I tried 0, 2, 0, 2 here, but it seems 0,1 0,2 works better for some strange reason?
+            float relative = Math.max(quad.getTexV(0), quad.getTexV(1)) - Math.min(quad.getTexV(0), quad.getTexV(2));
+            return isLower ? icon.getMinV() + relative : icon.getMaxV() - relative;
         }
 
         return quad.getTexV(idx);
